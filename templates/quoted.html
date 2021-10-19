@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quoted
+{% endblock %}
+
+{% block main %}
+<div class="l-trade-box">
+    <div class="l-quoted-header card-purple">
+        <div class="l-quoted">
+            <div class="quoted-symbol">{{ quote["symbol"] }}</div>
+            <div class="quoted-name">{{ quote["name"] }}</div>
+        </div>
+        <div id="price" class="quoted-price">{{ quote["price"] }}</div>
+        <div class="quoted-pl">
+            {% if quote["change"] and quote["changePct"] is number %}
+            <span class="pl" id="change">{{ quote["change"] }}</span> <span class="pl pct" id="changePct">{{ quote["changePct"] }}</span>
+            {% else %}
+            <span id="change">--</span> <span id="changePct">--</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="form-box">
+        <form id="trade-form" class="l-trade-form" action="/buy" method="post">
+            <div class="l-trade-input">
+                <div>Side</div>
+                <div class="l-side-btns">
+                    <input id="sell" class="sell-btn is-inactive" name="sell" type="button" value="Sell" onclick="toggleSide('sell')">
+                    <input id="buy" class="buy-btn" name="buy" type="button" value="Buy" onclick="toggleSide('buy')">
+                </div>
+                <label for="qty">Quantity</label>
+                <input id="qty" autocomplete="off" autofocus name="shares" min="1" value="1" type="number">
+                <label for="buy-pwr">Buying power</label>
+                <input id="buy-pwr" name="buy-pwr" value="{{ balance }}" type="number" disabled>
+                <label for="est-cost">Estimated cost</label>
+                <input id="est-cost" name="est-cost" value="0.00" type="number" disabled>
+                <input name="symbol" style="display:none" value="{{ quote['symbol'] }}">
+            </div>
+            <button id="trade-submit" class="form-button is-buy" type="submit">Buy</button>
+        </form>
+    </div>
+</div>
+<script>
+    let balance = `{{ balance }}`;
+    let quote = document.getElementById("price").innerHTML;
+    let formAction = "buy";
+
+    const qtyField = document.getElementById("qty");
+    const bpField = document.getElementById("buy-pwr");
+    const costField = document.getElementById("est-cost");
+
+    qtyField.addEventListener("input", () => {
+        updateFields(parseInt(qtyField.value));
+    });
+
+    function updateFields(qty) {
+
+        // Updated float values are rounded to the hundreths 
+
+        estCost = quote * qty;
+        costField.value = Math.round(estCost * 100 + Number.EPSILON) / 100;
+        
+        if(formAction == "buy") {
+            newBalance = balance - (quote * qty);
+            bpField.value = Math.round(newBalance * 100 + Number.EPSILON) / 100;
+        }
+    }
+
+    function toggleSide(side) {
+        let btn = document.getElementById(side);
+        let form = document.getElementById("trade-form");
+        let submit = document.getElementById("trade-submit");
+        
+        if (btn.classList.contains("is-inactive") && formAction != side) {
+
+            formAction = side;
+
+            switch(side) {
+                case "buy":
+                    document.getElementById("sell").classList.add("is-inactive");
+                    btn.classList.remove("is-inactive");
+                    submit.classList.remove("is-sell");
+                    submit.classList.add("is-buy");
+                    submit.innerText = "Buy"
+                    form.setAttribute("action", "/buy");
+                    break;
+
+                case "sell":
+                    document.getElementById("buy").classList.add("is-inactive");
+                    btn.classList.remove("is-inactive");
+                    submit.classList.remove("is-buy");
+                    submit.classList.add("is-sell");
+                    submit.innerText = "Sell";
+                    form.setAttribute("action", "/sell");
+                    break;
+            }
+
+            document.getElementById("buy-pwr").value = balance;
+            document.getElementById("qty").value = 1;
+            document.getElementById("est-cost").value = quote;
+        }
+    }
+
+</script>
+<script src="../static/js/updateValues.js"></script>
+{% endblock %}

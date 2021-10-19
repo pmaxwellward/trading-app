@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/main.css">
+    <link href="/static/favicon.ico" rel="icon">
+    <title>Trading App - {% block title %}{% endblock %}</title>
+</head>
+<body>
+    {% if session.user_id %}
+        <nav class="l-nav"> 
+            <div class="l-search">
+                <form action="/search" method="get">
+                    <input class="search" type="search" autocomplete="off" placeholder="Symbol/Name" name="q">
+                </form>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li id="/" onclick="transition('/', '11%')">Assets</li>
+                    <li id="/quote" onclick="transition('/quote', '34.5%')">Quote</li>
+                    <li id="/deposit" onclick="transition('/deposit', '60%')">Deposit</li>
+                    <li id="/history" onclick="transition('/history', '85%')">History</li>
+                    <div id="caret" class="caret-animate"></div>
+                </ul>
+            </div>
+            <div class="settings">
+                <a href="/logout">
+                    <img src="../static/img/log-out.svg">
+                </a>
+            </div>
+        </nav>
+        <script src="../static/js/search.js"></script>
+    {% else %}
+        <nav class="l-nav l-nav-login">
+        </div>
+            <div class="nav-title">trading app</div>
+            <div class="nav-links">
+                <ul>
+                    <li id="/register" onclick="transition('/register', '24%')">Register</li>
+                    <li id="/login" onclick="transition('/login', '75%')">Log In</li>
+                    <div id="caret" class="caret-animate"></div>
+                </ul>
+            </div>
+        </nav>
+    {% endif %}
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+    <footer>
+        Data provided for free by <a href="https://iextrading.com/developer"> IEX</a>. View <a href="https://iextrading.com/api-exhibit-a/"> IEX’s Terms of Use</a>.
+    </footer>
+    <script src="../static/js/navCaret.js"></script>
+</body>
+</html>

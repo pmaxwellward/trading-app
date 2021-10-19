@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Deposit
+{% endblock %}
+
+{% block main %}
+    <div class="l-deposit-box">
+        <div class="l-deposit-header card-purple">
+            <div>Cash Balance</div>
+            <div>{{ cash|round(2, 'common') }}</div>
+        </div>
+        <div class="form-box">
+            <form class="l-deposit-form" action="/deposit" method="post">
+                <div class="l-deposit-input">
+                    <label for="deposit">Deposit</label>
+                    <input class="deposit-input" autocomplete="off" autofocus name="amount" placeholder="Deposit" type="text">
+                </div>
+                <button class="user-submit form-button" type="submit">Deposit</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Assets
+{% endblock %}
+
+{% block main %}
+    <div class="l-assets-box">
+      <div class="l-assets-dash card-purple">
+        <div class=l-assets-total>
+          <div>Account value</div>
+          <div id="acct-total">{{ (total + cash)|round(2, 'common') }}</div>
+
+        </div>
+        <div class="l-assets-metrics">
+          <div class="metric">
+            <div>Open P&L</div>
+            <div id="acct-open-pl">
+              <span id="acct-open-pl-usd" class="pl usd">{{ acctOpen["usd"] }}</span> 
+              <span id="acct-open-pl-pct" class="pl pct">{{ acctOpen["pct"] }}</span>
+            </div>
+          </div>
+          <div class="metric">
+            <div>Market Value</div>
+            <div id="acct-mkt-value">{{ total }}</div>
+          </div>
+          <div class="metric">
+            <div>Day's P&L</div>
+            <div id="acct-day-pl">
+              <span id="acct-day-pl-usd" class="pl usd">{{ acctDay["usd"] }}</span>
+              <span id="acct-day-pl-pct" class="pl pct">{{ acctDay["pct"] }}</span> 
+
+            </div>
+          </div>
+          <div class="metric">
+            <div>Cash Balance</div>
+            <div>{{ cash }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="l-assets-data">
+        <div class="l-assets-head">
+          <div>Symbol</div>
+          <div>Mkt. Value/Qty.</div>
+          <div>Open P&L</div>
+          <div>Last/Avg. Price</div>
+        </div>
+        <div class="l-assets-table border-box">
+          <table class="assets-table">
+            <tbody>
+              {% for row in rows if row["shares"] > 0 %}
+              <tr class="assets-tr" onclick="postQuote(`{{ row['symbol'] }}`)">
+                <td>
+                  <div class="l-td">
+                    <div class="symbol">{{ row["symbol"] }}</div>
+                    <div>{{row["name"]}}</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="l-td">
+                    <div id="{{row['symbol']}}-mkt-value">{{ row["shares"] * row["curPrice"]|round(2, 'common') }}</div>
+                    <div>{{ row["shares"] }}</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="l-td">
+                    <div id="{{row['symbol']}}-pl-usd" class="pl usd">{{ row["pl-usd"] }}</div>
+                    <div id="{{row['symbol']}}-pl-pct" class="pl pct">{{ row["pl-pct"] }}</div>
+
+                  </div>
+                </td>
+                <td>
+                  <div class="l-td">
+                    <div id="{{row['symbol']}}-cur-price">{{ row["curPrice"] }}</div>
+                    <div>{{ row["avgPrice"]|round(2, 'common') }}</div>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    </form>
+    <script src="../static/js/postQuote.js"></script>
+    <script src="../static/js/updateValues.js"></script>
+{% endblock %}

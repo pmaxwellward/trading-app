@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+  <div class="l-history-box">
+    <div class="l-history-head">
+      <div>Date</div>
+      <div>Symbol</div>
+      <div>Shares</div>
+      <div>Price</div>
+      <div>TOTAL</div>
+    </div>
+    <div class="l-history-table border-box">
+      <table>
+      {% for row in rows %}
+        <tr class="l-history-tr">
+          <td>{{ row["date"] }}</td>
+          <td>
+            <div class="l-td">
+              <div>{{ row["symbol"] }}</div>
+              <!-- <div>{{ row["name"] }}</div> -->
+          </td>
+          {% if row["sale"] == true %}
+          <td class="is-loss">-{{ row["shares"] }}</td>
+          {% else %}
+          <td class="is-profit">+{{ row["shares"] }}</td>
+          {% endif %}
+          <td>{{ row["price"]|round(2, 'ceil') }}</td>
+          <td>{{ (row["shares"] * row["price"])|round(2, 'ceil') }}</td>
+        </tr>
+      {% endfor %}
+      </table>
+    </div>
+  </div>
+{% endblock %}

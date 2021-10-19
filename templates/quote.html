@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quotes
+{% endblock %}
+
+{% block main %}
+    <div class="l-quote-box border-box">
+        <ul class="symbol-list" id="symbol-list">
+            <li class="quote-placeholder" onclick="null"><i>Enter a symbol or name in the search bar above...</i></li>
+        </ul>
+    </div>
+    <script src="/static/js/quote.js"></script>
+    <script src="../static/js/postQuote.js"></script>
+{% endblock %}

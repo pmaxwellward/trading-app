@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <!-- <form action="/register" method="post">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text">
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="password" placeholder="Password" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Register</button>
+    </form> -->
+    <div class="l-user-box">
+        <div class="l-user-header card-purple">
+            <div class="user-title">CREATE ACCOUNT</div>
+            <div class="user-toggle"><a href="/login">Already registered?</a></div>
+        </div>
+        <div class="form-box">
+            <form class ="l-user-form" action="/register" method="post">
+                <div class="l-user-inputs">
+                    <input autocomplete="off" autofocus name="username" placeholder="Username" type="text">
+                    <input name="password" placeholder="Password" type="text">
+                </div>
+                <button class="user-submit" type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

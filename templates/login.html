@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <div class="l-user-box">
+        <div class="l-user-header card-purple">
+            <div class="user-title">LOG IN</div>
+            <div class="user-toggle"><a href="/register">Create account</a></div>
+        </div>
+        <div class="form-box">
+            <form class="l-user-form" action="/login" method="post">
+                <div class="l-user-inputs">
+                    <input autocomplete="off" autofocus name="username" placeholder="Username" type="text">
+                    <input name="password" placeholder="Password" type="password">
+                </div>
+                <button class="user-submit" type="submit">Log In</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
