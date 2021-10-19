@@ -4,6 +4,7 @@ let options = {
       'content-type': 'application/json'}
     }
 
+// recursively update relevant data from route    
 async function fetchData () {
   const res = await fetch(window.location.pathname, options);
   const data = await res.json();
@@ -13,6 +14,7 @@ async function fetchData () {
 
 fetchData();
 
+// update values in the client side
 function updateValues(res) {
   Object.entries(res).forEach(([key, value]) => {
     let el = document.getElementById(key)

@@ -1,3 +1,4 @@
+// update quote results with each keystroke
 
 let search = document.querySelector(".search");
 

@@ -21,8 +21,4 @@ function postQuote(symbol) {
 
     document.querySelector("#quote-form").submit()
 
-    // let symbolInput = document.querySelector("#symbol-input");
-    // symbolInput.value = symbol;
-    // document.querySelector("#quote-form").submit();
-
 }
