@@ -48,7 +48,7 @@ if not os.environ.get("API_KEY"):
 def calcShares(sym):
     # Store values of stocks purchased and stocks sold
     sharesBought = db.execute("SELECT SUM(shares) FROM transactions WHERE symbol = :symbol AND sale IS NULL AND id = :user_id", symbol=sym, user_id=session["user_id"])[0]
-    sharesSold = db.execute("SELECT SUM(shares) FROM transactions WHERE symbol = :symbol AND sale = 'true' AND id = :user_id", symbol=sym, user_id=session["user_id"])[0]
+    sharesSold = db.execute("SELECT SUM(shares) FROM transactions WHERE symbol = :symbol AND sale IS NOT NULL AND id = :user_id", symbol=sym, user_id=session["user_id"])[0]
     
     # If user hasn't sold any stocks
     if sharesSold["sum"] == None:
@@ -78,9 +78,9 @@ def calcSumPrice(sym):
 def index():
 
     # Select transaction table, set a variable that will hold total stock value, and select user cash balance
-    rows = db.execute("SELECT * FROM transactions WHERE id = :user_id ORDER BY symbol", user_id=session["user_id"])
+    rows = db.execute("SELECT id, symbol FROM transactions WHERE id = :user_id GROUP BY id, symbol", user_id=session["user_id"])
 
-    cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])
+    cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])[0]
 
     if request.method == "GET":
 
@@ -89,8 +89,7 @@ def index():
         close = 0
         acctOpen = {}
         acctDay = {}
-
-        # rowsJSON = jsonify(rows)
+        
         """Show value of currently owned stocks on homepage"""
 
         for row in rows:
@@ -119,7 +118,7 @@ def index():
             acctDay["usd"] = round(close - cost, 2)
             acctDay["pct"] = round(((close - cost)/total) * 100, 2)
 
-        return render_template("index.html", rows=rows, total=round(total, 2), cash=round(cash[0]["cash"], 2), cost=round(cost, 2), close=round(close, 2), acctOpen=acctOpen, acctDay=acctDay)
+        return render_template("index.html", rows=rows, total=round(total, 2), cash=round(cash["cash"], 2), cost=round(cost, 2), close=round(close, 2), acctOpen=acctOpen, acctDay=acctDay)
 
     else:
         #
@@ -144,7 +143,7 @@ def index():
                 res[row["symbol"] + "-pl-usd"] = (position["price"] * row["shares"]) - row["sumPrice"]
                 res[row["symbol"] + "-pl-pct"] = (position["price"] * row["shares"] - row["sumPrice"]) / (position["price"] * row["shares"]) * 100
                 res[row["symbol"] + "-cur-price"] = position["price"]
-                res["acct-total"] = total + cash[0]["cash"]
+                res["acct-total"] = total + cash["cash"]
                 res["acct-mkt-value"] = total
                 res["acct-open-pl-usd"] = total - cost
                 res["acct-open-pl-pct"] = ((total - cost)/total) * 100
@@ -174,11 +173,11 @@ def buy():
 
         # Check is user has enough money to buy shares and insert into db table
         price = position["price"]
-        cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])
-        balance = cash[0]["cash"]
+        cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])[0]
+        balance = cash["cash"]
         name = position["name"]
 
-        if cash[0]["cash"] < price:
+        if cash["cash"] < price:
             return render_template("apology.html", msg="You don't have enough cash", code=403), 403
         else:
             balance -= (price * float(shares))
@@ -279,8 +278,8 @@ def quoted(symbol):
     
     # Lookup price of submitted symbol
     quote = lookup(symbol)
-    cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])
-    balance = cash[0]["cash"]
+    cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])[0]
+    balance = cash["cash"]
 
     if not quote:
         return render_template("apology.html", msg="Invalid stock symbol", code=400), 400
@@ -356,12 +355,12 @@ def sell():
 
         # Get current price of shares selected, add transaction value to account
         price = position["price"]
-        cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])
-        balance = cash[0]["cash"] + (position["price"] * float(shares))
+        cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])[0]
+        balance = cash["cash"] + (position["price"] * float(shares))
         name = position["name"]
 
         db.execute("INSERT INTO transactions (id, symbol, name, shares, price, sale) VALUES (:sessionID, :symbol, :name, :shares, :price, :sale)",
-            sessionID=session["user_id"], symbol=symbol, name=name, shares=shares, price=price, sale="true")
+            sessionID=session["user_id"], symbol=symbol, name=name, shares=shares, price=price, sale='true')
 
         db.execute("UPDATE users SET cash = :balance WHERE id = :user_id", balance=balance, user_id=session["user_id"])
 
@@ -389,7 +388,7 @@ def deposit():
     """Deposit Money into account"""
 
     # Get current cash balance
-    cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])
+    cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=session["user_id"])[0]
 
     if request.method == "POST":
 
@@ -401,13 +400,13 @@ def deposit():
             return render_template("apology.html", msg="Enter an amount to deposit", code=400), 400
 
         # Add amount to current cash balance and update db
-        cash[0]["cash"] += float(amount)
-        db.execute("UPDATE users SET cash = :cash", cash=cash[0]["cash"])
+        cash["cash"] += float(amount)
+        db.execute("UPDATE users SET cash = :cash", cash=cash["cash"])
 
         return redirect("/")
 
     else:
-        return render_template("deposit.html", cash=cash[0]["cash"])
+        return render_template("deposit.html", cash=cash["cash"])
 
 @app.route("/search")
 @login_required
