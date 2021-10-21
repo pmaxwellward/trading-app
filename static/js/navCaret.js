@@ -38,8 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (link) {
+        
         link.style.fontWeight = "600";
         caret.classList.add("caret");
+
+        if (path == "/login" || path == "/register") 
+            caret.classList.add("caret-login");
+
     } else {
         caret.style.opacity = 0;
     }

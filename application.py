@@ -91,7 +91,6 @@ def index():
         acctDay = {}
         
         """Show value of currently owned stocks on homepage"""
-
         for row in rows:
             # Get current value of stock
             position = lookup(row["symbol"])
@@ -220,9 +219,11 @@ def login():
         elif not request.form.get("password"):
             return render_template("apology.html", msg="must provide password", code=403), 403
 
+        username = request.form.get("username")
+        username = username.upper()
+
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username",
-                          username=request.form.get("username"))
+        rows = db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
@@ -315,6 +316,8 @@ def register():
         password = request.form.get("password")
         if not password:
             return render_template("apology.html", msg="You must provide a password", code=403), 403
+
+        name = name.upper()
 
         # Check if username already exists, return apology is yes, insert in to db if no
         userMatch = db.execute("SELECT * FROM users WHERE username = :name", name=name)
