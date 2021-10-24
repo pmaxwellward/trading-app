@@ -404,7 +404,7 @@ def deposit():
 
         # Add amount to current cash balance and update db
         cash["cash"] += float(amount)
-        db.execute("UPDATE users SET cash = :cash", cash=cash["cash"])
+        db.execute("UPDATE users SET cash = :cash WHERE id = :user_id", cash=cash["cash"], user_id=session["user_id"][0])
 
         return redirect("/")
 
