@@ -403,8 +403,8 @@ def deposit():
             return render_template("apology.html", msg="Enter an amount to deposit", code=400), 400
 
         # Add amount to current cash balance and update db
-        cash["cash"] += float(amount)
-        db.execute("UPDATE users SET cash = :cash WHERE id = :user_id", cash=cash["cash"], user_id=session["user_id"][0])
+        newBalance = cash["cash"] + float(amount)
+        db.execute("UPDATE users SET cash = :cash WHERE id = :user_id", cash=float(newBalance), user_id=session["user_id"])
 
         return redirect("/")
 
