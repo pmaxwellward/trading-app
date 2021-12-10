@@ -156,7 +156,7 @@ ul {
     grid-template-rows: 100%;
     color: var(--text-white);
     opacity: 0.5;
-    font-size: 12px;
+    font-size: 10px;
     justify-self: center;
 }
 
@@ -173,7 +173,7 @@ ul {
 @media only screen and (max-width: 600px) {
     .l-assets-head {
         grid-template-columns: 50% 16.666% 16.666% 16.666%; 
-        font-size: 6px;
+        font-size: 5px;
     }
 }
 
