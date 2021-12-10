@@ -747,8 +747,6 @@ ul {
     align-self: center;
     margin: 0;
     grid-area: links;
-    height: 100%;
-    width: 100%;
 }
 
 .nav-links ul {
@@ -773,6 +771,8 @@ ul {
         justify-self: center;
         justify-content: center;
         scrollbar-width: none;
+        height: 100%;
+        width: 100%;
     }
     
     .nav-links::-webkit-scrollbar {
