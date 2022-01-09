@@ -2,11 +2,9 @@
 
 A simple paper trading app that demonstrates the principles of full stack development. The technologies used are Flask (python), HTML5/CSS/JS, and PostgreSQL.
 
-Backend: application.py
-
-Frontend: /static
-
-Views: /templates
+Backend: application.py  
+Frontend: /static  
+Views: /templates  
 
 Link to a live version of the app: [trading-app](https://pmw-trading-app.herokuapp.com/)
 
